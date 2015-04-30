@@ -3,10 +3,6 @@
 
 {% block body %}
 
-{% for key in session %}
-{{session[key]}}
-{% endfor %}
-
     <table class="table table-striped">
         <thead>
         <tr>
@@ -17,16 +13,18 @@
         </tr>
         </thead>
         <tbody>
+            {% for melon in cart %}
         <tr>
-            <td>name</td>
-            <td>qty</td>
-            <td>price</td>
-            <td>total</td>
+            <td>{{ melon.common_name }}</td>
+            <td>{{ cart[melon][0] }}</td>
+            <td>${{ '%.2f' %melon.price }}</td>
+            <td>${{ '%.2f' %cart[melon][1] }}</td>
         </tr>
+        {% endfor %}
         </tbody>
     </table>
 
-    <h3>Total: $27.00</h3>
+    <h3>Total: ${{'%.2f' %total_bill }}</h3>
 
     <a href="/checkout" class="btn btn-large btn-primary">Check Out</a>
 
