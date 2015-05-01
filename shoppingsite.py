@@ -7,7 +7,7 @@ Authors: Joel Burton, Christian Fernandez, Meggie Mahnken.
 """
 
 
-from flask import Flask, render_template, redirect, flash, session
+from flask import Flask, render_template, redirect, flash, session, request
 import jinja2
 
 import model
@@ -53,7 +53,7 @@ def show_melon(id):
     """
 
     melon = model.Melon.get_by_id(id)
-    print melon
+
     return render_template("melon_details.html",
                            display_melon=melon)
 
@@ -108,8 +108,22 @@ def process_login():
     Find the user's login credentials located in the 'request.form'
     dictionary, look up the user, and store them in the session.
     """
+    email = request.form.get("email")
+    password = request.form.get("password")
 
-    # TODO: Need to implement this!
+    customer = model.Customer.get_by_email(email)
+
+    if customer != None:
+        if customer.password == password:
+            session.setdefault('logged_in_customer_email', []).append(email)
+            flash("Successfully logged in!")
+            return redirect('/melons')
+        else:
+            flash('Incorrect password!')
+            return redirect('/login')
+    else:
+        flash('No such email.')
+        return redirect('/login')
 
     return "Oops! This needs to be implemented"
 
